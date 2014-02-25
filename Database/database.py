@@ -1,9 +1,9 @@
+#-*- coding: utf8 -*-
 import sqlite3
 
 class Database():
 	
 	def __init__(self, dataFile):
-		super(Database, self).__init__()
 		# Chemin du fichier de la base de donnees
 		self.dataFile = dataFile
 		# Creation de la connexion et du curseur
@@ -13,81 +13,96 @@ class Database():
 	# Suppression des tables
 	def del_tables(self):
 		try:
-			self.cur.execute("DROP TABLE authors")
+			self.cur.execute("DROP TABLE words")
 			self.cur.execute("DROP TABLE books")
+			self.cur.execute("DROP TABLE TF")
 		except:
 			print('*** Requete SQL incorrecte del_tables ***')
 
-	# Creation des tables
+	# Création des tables
 	def creat_tables(self):
 		try:
-			# Table des auteurs
-			self.cur.execute("CREATE TABLE authors(id_author INTEGER NOT NULL, lastname TEXT, firstname TEXT, PRIMARY KEY (id_author))")
 			# Table des livres
-			self.cur.execute("CREATE TABLE books(id_book INTEGER NOT NULL, title TEXT, category TEXT, id_author INTEGER, PRIMARY KEY (id_book), FOREIGN KEY (id_author) REFERENCES authors(id_author))")
+			self.cur.execute("""CREATE TABLE books(id_book INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(45), author VARCHAR(45))""")
+			# Table des mots
+			self.cur.execute("""CREATE TABLE words(id_word INTEGER PRIMARY KEY AUTOINCREMENT, val VARCHAR(45))""")
+			# Table des TFs
+			self.cur.execute("""CREATE TABLE TF(id_book INTEGER NOT NULL, id_word INTEGER NOT NULL, val FLOAT, FOREIGN KEY (id_book) REFERENCES books(id_book), FOREIGN KEY (id_word) REFERENCES words(id_word), PRIMARY KEY (id_book, id_word))""")
 		except:
 			print('*** Requete SQL incorrecte creat_tables ***')
 
-	# Ajout d'un auteur
-	def add_author(self, id_author, lastname_author, firstname_author):
-		try:
-			self.cur.execute("INSERT INTO authors(id_author, lastname, firstname) VALUES ("+id_author+", '"+lastname_author+"', '"+firstname_author+"')")
-			self.cur.execute("SELECT * FROM authors")
-		except:
-			print("*** Requete SQL incorrecte add_author("+lastname_author+") ***")
-		else:
-			print("add_author: "+lastname_author+" "+firstname_author)
-			print()
-
-	# Recherche id_author
-	def id_author(self, lastname_author, firstname_author):
-		try:
-			self.cur.execute("SELECT id_author FROM authors WHERE lastname='"+lastname_author+"' AND firstname='"+firstname_author+"'")
-		except:
-			print("*** Requete SQL incorrecte id_author("+lastname_author+", "+firstname_author+") ***")
-		else:
-			row = self.cur.fetchone()
-			if row:
-				return row[0]
-
 	# Ajout d'un livre
-	def add_book(self, id_book, title_book, category_book, id_author):
+	def add_book(self, title_book, author_book):
 		try:
-			self.cur.execute("INSERT INTO books(id_book, title, category, id_author) VALUES ("+id_book+", '"+title_book+"', '"+category_book+"', "+id_author+")")
-			#self.cur.execute("SELECT * FROM books")
+			self.cur.execute("""INSERT INTO books(title, author) VALUES ('"""+title_book+"""', '"""+author_book+"""');""")
 		except:
 			print("*** Requete SQL incorrecte add_book("+title_book+") ***")
 		else:
 			print("add_book: "+title_book)
 			print()
 
-	def add_book_to_database(self, title_book, lastname_author, firstname_author, category_book):
-		ida = self.id_author(lastname_author, firstname_author)
-		if ida == None:
-			try:
-				self.cur.execute("SELECT count(*) FROM authors")
-			except :
-				print("*** Requete SQL incorrecte add_book_to_database("+title_book+") ***")
-			else:
-				row = self.cur.fetchone()
-				if row:
-					ida = row[0]
-					self.add_author(str(ida),lastname_author,firstname_author)
+	# Ajout d'un mot
+	def add_word(self, val_word):
 		try:
-			self.cur.execute("SELECT count(*) FROM books")
-		except :
-			print("*** Requete SQL incorrecte add_book_to_database("+title_book+") ***")
+			self.cur.execute("""INSERT INTO words(val) VALUES ('"""+val_word+"""')""")
+		except:
+			print("*** Requete SQL incorrecte add_word("+val_word+") ***")
+		else:
+			print("add_word: "+val_word)
+			print()
+
+	# Recherche id_book
+	def id_book(self, title_book, author_book):
+		try:
+			self.cur.execute("""SELECT id_book FROM books WHERE title='"""+title_book+"""' AND author='"""+author_book+"""'""")
+		except:
+			print("*** Requete SQL incorrecte id_book("+title_book+") ***")
 		else:
 			row = self.cur.fetchone()
 			if row:
-				idb = row[0]
-				self.add_book(str(idb), title_book, category_book, str(ida))
+				return row[0]
 
-	# Afficher les livres
+	# Recherche id_word
+	def id_word(self, word):
+		try:
+			self.cur.execute("""SELECT id_word FROM words WHERE val='"""+word+"""'""")
+		except:
+			print("*** Requete SQL incorrecte id_word("+word+") ***")
+		else:
+			row = self.cur.fetchone()
+			if row:
+				return row[0]
+
+	# Ajout du TF d'un mot dans TF
+	def add_tf(self, id_book, id_word, tf_word):
+		try:
+			self.cur.execute("""INSERT INTO TF(id_book, id_word, val) VALUES ("""+str(id_book)+""", """+str(id_word)+""", """+str(tf_word)+""")""")
+		except:
+			print("*** Requete SQL incorrecte add_tf("+str(tf_word)+") ***")
+		else:
+			print("add_tf: "+str(tf_word))
+			print()
+
+	# Ajout d'un livre dans la base de donnees
+	def add_book_to_database(self, title_book, author_book, tf_words):
+		idb = self.id_book(title_book, author_book)
+		if idb == None:
+			self.add_book(title_book, author_book)
+			idb = self.id_book(title_book, author_book)
+		for word in tf_words:
+			idw = self.id_word(word)
+			if idw == None:
+				self.add_word(word)
+				idw = self.id_word(word)
+			print idb
+			print idw
+			self.add_tf(str(idb), str(idw), tf_words[word])
+
+	# Affichage des livres
 	def show_books(self):
 		try:
-			self.cur.execute("SELECT * FROM books")
-		except :
+			self.cur.execute("""SELECT * FROM books""")
+		except:
 			print("*** Requete SQL incorrecte show_books() ***")
 		else:
 			print ("books:")
@@ -95,23 +110,35 @@ class Database():
 				print(b)
 			print()
 
-	# Afficher les auteurs
-	def show_authors(self):
+	# Affichage des mots
+	def show_words(self):
 		try:
-			self.cur.execute("SELECT * FROM authors")
-		except :
-			print("*** Requete SQL incorrecte show_authors() ***")
+			self.cur.execute("""SELECT * FROM words""")
+		except:
+			print("*** Requete SQL incorrecte show_words() ***")
 		else:
 			print ("authors:")
 			for a in self.cur:
 				print(a)
 			print()
 
-	# Exécuter une requête SQL
+	# Affichage des TFs
+	def show_TFs(self):
+		try:
+			self.cur.execute("""SELECT * FROM TF""")
+		except:
+			print("*** Requete SQL incorrecte show_TFs() ***")
+		else:
+			print ("TFs:")
+			for a in self.cur:
+				print(a)
+			print()
+
+	# Exécution d'une requête SQL
 	def execute_sql(self, req):
 		try:
 			self.cur.execute(str(req))
-		except :
+		except:
 			print("*** Requete SQL incorrecte execute_sql() ***")
 		else:
 			print(req)
@@ -119,7 +146,7 @@ class Database():
 
 	# Confirmation des changements
 	def confirm(self):
-		choice = input("Enregistrer l'état actuel de la base de données (o/n) ? ")
+		choice = input("""Enregistrer l'état actuel de la base de données ("o"/"n") ? """)
 		if choice[0] == "o" or choice[0] == "O":
 			self.conn.commit()
 			print("Enregistrement OK!")
