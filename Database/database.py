@@ -39,7 +39,7 @@ class Database():
 			print("*** Requete SQL incorrecte add_book("+title_book+") ***")
 		else:
 			print("add_book: "+title_book)
-			print()
+			print
 
 	# Ajout d'un mot
 	def add_word(self, val_word):
@@ -49,7 +49,7 @@ class Database():
 			print("*** Requete SQL incorrecte add_word("+val_word+") ***")
 		else:
 			print("add_word: "+val_word)
-			print()
+			print
 
 	# Recherche id_book
 	def id_book(self, title_book, author_book):
@@ -81,22 +81,41 @@ class Database():
 			print("*** Requete SQL incorrecte add_tf("+str(tf_word)+") ***")
 		else:
 			print("add_tf: "+str(tf_word))
-			print()
+			print
 
 	# Ajout d'un livre dans la base de donnees
 	def add_book_to_database(self, title_book, author_book, tf_words):
+		# Recherche de l'id du livre
 		idb = self.id_book(title_book, author_book)
 		if idb == None:
 			self.add_book(title_book, author_book)
 			idb = self.id_book(title_book, author_book)
 		for word in tf_words:
+			# Recherche de l'id du mot
 			idw = self.id_word(word)
 			if idw == None:
+				# Ajout du mot s'il n'y est pas encore
 				self.add_word(word)
 				idw = self.id_word(word)
-			print idb
-			print idw
 			self.add_tf(str(idb), str(idw), tf_words[word])
+
+	# Recherche du TF d'un mot dans un livre
+	def tf_word(self, word, title_book, author_book):
+		# Recherche des id du livre et du mot
+		idw = str(self.id_word(word))
+		idb = str(self.id_book(title_book, author_book))
+		try:
+			self.cur.execute("""SELECT val FROM TF WHERE id_book="""+idb+""" AND id_word="""+idw)
+		except:
+			print("*** Requete SQL incorrecte tf_word("+word+") ***")
+		else:
+			row = self.cur.fetchone()
+			if row:
+				print('tf '+word+' dans '+title_book+': '+str(row[0]))
+				return row[0]
+
+
+
 
 	# Affichage des livres
 	def show_books(self):
@@ -108,7 +127,7 @@ class Database():
 			print ("books:")
 			for b in self.cur:
 				print(b)
-			print()
+			print
 
 	# Affichage des mots
 	def show_words(self):
@@ -117,10 +136,10 @@ class Database():
 		except:
 			print("*** Requete SQL incorrecte show_words() ***")
 		else:
-			print ("authors:")
+			print ("words:")
 			for a in self.cur:
 				print(a)
-			print()
+			print
 
 	# Affichage des TFs
 	def show_TFs(self):
@@ -132,7 +151,7 @@ class Database():
 			print ("TFs:")
 			for a in self.cur:
 				print(a)
-			print()
+			print
 
 	# Exécution d'une requête SQL
 	def execute_sql(self, req):
@@ -142,13 +161,24 @@ class Database():
 			print("*** Requete SQL incorrecte execute_sql() ***")
 		else:
 			print(req)
-			return self.cur.fetchall()
+			for r in self.cur:
+				print (r)
+			print
 
-	# Confirmation des changements
+	# Sauvegarde de l'état actuel de la base de données
+	def save_database(self):
+		self.conn.commit()
+
+	# Fermeture de la connexion
+	def close_connection():
+		self.conn.close()
+
+	# Demande de confirmation des changements
+	# et fermeture de la connexion
 	def confirm(self):
 		choice = input("""Enregistrer l'état actuel de la base de données ("o"/"n") ? """)
 		if choice[0] == "o" or choice[0] == "O":
-			self.conn.commit()
+			self.save_database()
 			print("Enregistrement OK!")
 		else:
 			print("Enregistrement annulé!")
