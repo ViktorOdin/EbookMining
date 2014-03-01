@@ -15,8 +15,8 @@ tf2w['mot2'] = 2.0
 # tf2w['mot20'] = 20.0
 # tf2w['mot21'] = 21.0
 print tf2w
-db.add_book_to_database('Book1','Auteur1',tf1w)
-db.add_book_to_database('Book2','Auteur2',tf2w)
+db.add_book_to_database('Book1','Auteur1',tf1w,1)
+db.add_book_to_database('Book2','Auteur2',tf2w,2)
 db.show_books()
 db.show_words()
 db.show_TFs()
