@@ -32,6 +32,7 @@ class Text():
 		dictionnaire dont les clés sont les mots et les valeurs	le nombre 
 		d'occurences."""
 		occ = {}
+		punctuation = unicode(string.punctuation + "°" +"«" + "»", 'utf8')
 		# Découpage du texte en liste
 		words_tmp = WordPunctTokenizer().tokenize(self.text)
 		# Suppression des mots les plus courants dans la langue française
@@ -43,7 +44,8 @@ class Text():
 			# Retirer le genre et le nombre du mot
 			word = stemmer.stem(word)
 			# Ignorer la ponctuation
-			if word not in string.punctuation:
+			# FIXME ne vérifie que si le mot est un caractère
+			if word[0] not in punctuation:
 				if word in occ:
 					occ[word] += 1
 				else:
