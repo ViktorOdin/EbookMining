@@ -56,6 +56,8 @@ class Text():
 		stemmer = FrenchStemmer()
 		stop = stopwords.words('french')
 		words = [w for w in words_tmp if w.encode('utf8') not in stop]
+		# FIXME ici on a encore la liste des mots
+		print(len(words))
 		# Calcul des occurences
 		for word in words:
 			# Retirer le genre et le nombre du mot

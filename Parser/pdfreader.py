@@ -17,7 +17,6 @@ class PdfReader():
 		self.pdf = pyPdf.PdfFileReader(open(filepath, "rb"))
 		self.metadata = self.extractMetadata()
 		self.text = self.extractText()
-		self.occ = {}
 
 	### Accesseurs 
 		
