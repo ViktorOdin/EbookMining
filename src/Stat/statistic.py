@@ -14,5 +14,5 @@ def idf (n_books, n_books_with_word):
 def dic_idf (n_books, dic_occu_books_with_word):
   dic_idf = {}
   for word in dic_occu_books_with_word.keys():
-    dic_idf[word]=idf(nbr_livre,dic_occu_books_with_word[word])
+    dic_idf[word]=idf(n_books,dic_occu_books_with_word[word])
   return dic_idf
