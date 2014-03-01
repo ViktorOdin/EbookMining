@@ -43,6 +43,6 @@ if __name__ == '__main__':
 				+ str(occurences[word]) + "\n")
 		foo.close()
 
-tf=st.tf(pdf.text.getNumberOfWords(),occurences)
-
-print(tf)
+		# Essais de Victor sur les TF
+		tf = st.tf(pdf.text.getNumberOfWords(),occurences)
+		print(tf)
