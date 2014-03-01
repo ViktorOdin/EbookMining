@@ -18,6 +18,8 @@ class PdfReader():
 		self.metadata = self.extractMetadata()
 		self.text = self.extractText()
 		self.occ = {}
+
+	### Accesseurs 
 		
 	def getAuthor(self):
 		"Retourne l'auteur du document, ou None s'il n'est pas défini."
@@ -30,6 +32,8 @@ class PdfReader():
 	def getText(self):
 		"Retourne le texte du document."
 		return self.text
+
+	### Méthodes internes
 
 	def extractMetadata(self):
 		"Extrait les métadonnées du document."

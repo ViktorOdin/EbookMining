@@ -17,17 +17,34 @@ class Text():
 	def __init__(self, originalText):
 		"Nettoie le texte passé en paramètre"
 		self.text = self.clean(originalText)
+		self.occurences = self.countOccurences()
+
+	### Accesseurs
+
+	def getNumberOfWords(self):
+		"Retourne le nombre de mots du texte."
+		# FIXME la fonction renvoie le nombre de caractères,
+		# pas le nombre de mots
+		return len(self.text)
+
+	def getOccurences(self):
+		"""Retourne le dictionnaire des occurences de chaque mot 
+		dans le document."""
+		return self.occurences
+
+	### Méthodes internes
 
 	def clean(self, text):
-		"Retire les chiffres et la ponctuation d'un texte."
+		"Retourne le texte nettoyé de ses chiffres et de sa ponctuation."
 		# Encodage de unicode vers utf8
 		tmp = text.encode('utf8')
 		tmp = tmp.translate(None, string.digits)
 		# Réencodage de utf8 vers unicode
 		text = unicode(tmp, 'utf8')
+		# Renvoie une chaîne
 		return text
 
-	def countOccurences (self):
+	def countOccurences(self):
 		"""Compte les occurences de chaque mot du texte	et retourne un 
 		dictionnaire dont les clés sont les mots et les valeurs	le nombre 
 		d'occurences."""
@@ -44,15 +61,10 @@ class Text():
 			# Retirer le genre et le nombre du mot
 			word = stemmer.stem(word)
 			# Ignorer la ponctuation
-			# FIXME ne vérifie que si le mot est un caractère
 			if word[0] not in punctuation:
 				if word in occ:
 					occ[word] += 1
 				else:
 					occ[word] = 1
 		return occ
-
-	def getNumberOfWords(self):
-		"Retourne le nombre de mots du texte."
-		return len(self.text)
 

@@ -34,8 +34,8 @@ if __name__ == '__main__':
 		print(pdf.text.getNumberOfWords())
 
 		# Ecriture des occurences de chaque mot du document dans foo.txt
-		foo = open('foo.txt', 'w')
-		occurences = pdf.text.countOccurences()
+		foo = open('/tmp/foo.txt', 'w')
+		occurences = pdf.text.getOccurences()
 		for word in occurences:
 			foo.write(word.encode('utf8', 'ignore') + ": " 
 				+ str(occurences[word]) + "\n")
