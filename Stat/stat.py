@@ -2,11 +2,17 @@
 
 import numpy as np
 
-def tf (nbr_mot, dico_occu):
-  dico_tf = {}
-  for mot in dico_occu.keys():
-    dico_tf[mot]=(dico_occu[mot]/ float(nbr_mot))
-  return dico_tf
+def tf (n_words, dic_occu):
+  dic_tf = {}
+  for word in dic_occu.keys():
+    dic_tf[word]=(dic_occu[word]/ float(n_words))
+  return dic_tf
   
-def idf (nbr_livre, nbr_livre_ayant_mot):
-  return np.log(nbr_livre/ float(nbr_livre_ayant_mot))
+def idf (n_books, n_books_with_word):
+  return np.log(n_books / float(n_books_with_word))
+
+def dic_idf (n_books, dic_occu_books_with_word):
+  dic_idf = {}
+  for word in dic_occu_books_with_word.keys():
+    dic_idf[word]=idf(nbr_livre,dic_occu_books_with_word[word])
+  return dic_idf
