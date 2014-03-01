@@ -1,41 +1,43 @@
+
 # -*- coding: utf8 -*-
 
 #!/usr/bin/env python2.7
 
-"""
-TODO
-"""
+"Ce module enregistre le contenu et les métadonnées d'un fichier PDF."
 
 import pyPdf
+from text import Text
 
 class PdfReader():
 
 	def __init__(self, filepath):
-		"TODO"
+		"""Enregistre le contenu et les métadonnées d'un fichier PDF.
+		[filepath] est le chemin vers le fichier PDF."""
 		self.filepath = filepath
 		self.pdf = pyPdf.PdfFileReader(open(filepath, "rb"))
 		self.metadata = self.extractMetadata()
 		self.text = self.extractText()
+		self.occ = {}
 		
 	def getAuthor(self):
-		"Returns the author of the document, or None if it is not defined"
+		"Retourne l'auteur du document, ou None s'il n'est pas défini."
 		return self.metadata.get('/Author')
 
 	def getTitle(self):
-		"Returns the title of the document, or None if it is not defined"
+		"Retourne le titre du document, ou None s'il n'est pas défini."
 		return self.metadata.get('/Title')
 
 	def getText(self):
-		"Returns the text of the document."
+		"Retourne le texte du document."
 		return self.text
 
 	def extractMetadata(self):
-		"Extracts the metadata of the document."
+		"Extrait les métadonnées du document."
 		return self.pdf.getDocumentInfo()
 
 	def extractText(self):
-		"Extracts the text of the document."
+		"Extrait le texte du document."
 		text = ""
 		for page in self.pdf.pages:
 			text += page.extractText()
-		return text
+		return Text(text)

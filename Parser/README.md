@@ -8,6 +8,6 @@ $ python main.py filepath
 TODO
 ====
 
-Nettoyer le texte de sa ponctuation : nltk.tokenizer.WordPunktTokenizer
+Nettoyer le texte de sa ponctuation : nltk.tokenize.WordPunctTokenizer
 Enregistrer le nombre total de mots du texte -> len(clean(text).split(' '))
 /!\ le nombre total du texte doit prendre en compte les mots "stopwords"
