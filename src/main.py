@@ -52,3 +52,7 @@ if __name__ == '__main__':
 
 		# Affichage de la liste des livres
 		db.show_books()
+
+		# Enregistrement des modifications et fermeture de la connexion
+		db.save_database()
+		db.close_connection()
