@@ -174,7 +174,7 @@ class Database():
 		self.conn.commit()
 
 	# Fermeture de la connexion
-	def close_connection():
+	def close_connection(self):
 		self.conn.close()
 
 	# Demande de confirmation des changements
