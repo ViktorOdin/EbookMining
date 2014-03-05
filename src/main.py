@@ -21,16 +21,18 @@ if __name__ == '__main__':
 			+ "\toù directory est le chemin répertoire contenant"
 			+ "les livres à ajouter à la base")
 	else:
+		directoryPath = sys.argv[1]
+		databasePath = "db.sq3"
+
 		# Connexion à la base de données
-		db = db.Database("db.sq3")
+		db = db.Database(databasePath)
 
 		# Vérification de l'existence des tables
 		# TODO
 		# db.creat_tables()
 
 		# Récupération de la liste des fichiers à parser
-		directory = sys.argv[1]
-		for root, dirs, files in os.walk(directory):
+		for root, dirs, files in os.walk(directoryPath):
 			for file in files:
 				filepath = os.path.abspath(os.path.join(root, file))
 
