@@ -80,7 +80,8 @@ class Database():
 		try:
 			self.cur.execute("""INSERT INTO TF(id_book, id_word, val) VALUES ("""+str(id_book)+""", """+str(id_word)+""", """+str(tf_word)+""")""")
 		except:
-			print("*** Requete SQL incorrecte add_tf("+str(tf_word)+") ***")
+			# print("*** Requete SQL incorrecte add_tf("+str(tf_word)+") ***")
+			()
 		else:
 			# print("add_tf: "+str(tf_word))
 			# print
