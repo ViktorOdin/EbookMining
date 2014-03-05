@@ -15,21 +15,23 @@ import Stat as st
 import os
 
 if __name__ == '__main__':
-	"Méthode main"
+
+	databasePath = "db.sq3"
+
+	# Vérification de l'existence des tables
+	# TODO
+	# db.creat_tables()
+
+	# Connexion à la base de données
+	db = db.Database(databasePath)
+
 	if len(sys.argv) < 2:
 		print("Usage: python main.py directory\n"
 			+ "\toù directory est le chemin répertoire contenant"
 			+ "les livres à ajouter à la base")
+
 	else:
 		directoryPath = sys.argv[1]
-		databasePath = "db.sq3"
-
-		# Connexion à la base de données
-		db = db.Database(databasePath)
-
-		# Vérification de l'existence des tables
-		# TODO
-		# db.creat_tables()
 
 		# Récupération de la liste des fichiers à parser
 		for root, dirs, files in os.walk(directoryPath):
@@ -43,6 +45,9 @@ if __name__ == '__main__':
 				author = pdf.getAuthor()
 				title = pdf.getTitle()
 
+				# TODO delete me
+				print("Livre en cours de traitement: " + title)
+
 				# Récupération des TF de chacun des mots
 				occurences = pdf.text.getOccurences()
 				tfs = st.tf(pdf.text.getNumberOfWords(), occurences)
@@ -50,9 +55,12 @@ if __name__ == '__main__':
 				# Ajout du livre à la base de données
 				db.add_book_to_database(title, author, tfs)
 
-		# Affichage de la liste des livres
-		db.show_books()
+				# Enregistrement des modifications
+				db.save_database()
 
-		# Enregistrement des modifications et fermeture de la connexion
-		db.save_database()
-		db.close_connection()
+
+	# Affichage de la liste des livres
+	db.show_books()
+
+	# Fermeture de la connexion
+	db.close_connection()
