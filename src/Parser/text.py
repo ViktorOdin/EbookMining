@@ -37,7 +37,10 @@ class Text():
 		et de leur ponctuation."""
 		words = []
 		stemmer = FrenchStemmer()
-		punctuation = unicode(string.punctuation + "°" +"«" + "»", 'utf8')
+		# FIXME la liste des caractères n'est pas exhaustive
+		punctuation = unicode(string.punctuation + 
+			"+" + "%" + "°" +"«" + "»" + "<" + ">" +"#" + "˘" + "˜" + "˛",
+			'utf8')
 		# Encodage de unicode vers utf8
 		tmp = text.encode('utf8')
 		tmp = tmp.translate(None, string.digits)

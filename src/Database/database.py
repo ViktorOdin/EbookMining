@@ -38,8 +38,9 @@ class Database():
 		except:
 			print("*** Requete SQL incorrecte add_book("+title_book+") ***")
 		else:
-			print("add_book: "+title_book)
-			print
+			# print("add_book: "+title_book)
+			# print
+			()
 
 	# Ajout d'un mot
 	def add_word(self, val_word):
@@ -48,8 +49,9 @@ class Database():
 		except:
 			print("*** Requete SQL incorrecte add_word("+val_word+") ***")
 		else:
-			print("add_word: "+val_word)
-			print
+			# print("add_word: "+val_word)
+			# print
+			()
 
 	# Recherche id_book
 	def id_book(self, title_book, author_book):
@@ -80,8 +82,9 @@ class Database():
 		except:
 			print("*** Requete SQL incorrecte add_tf("+str(tf_word)+") ***")
 		else:
-			print("add_tf: "+str(tf_word))
-			print
+			# print("add_tf: "+str(tf_word))
+			# print
+			()
 
 	# Ajout d'un livre dans la base de donnees
 	def add_book_to_database(self, title_book, author_book, tf_words):
@@ -111,7 +114,7 @@ class Database():
 		else:
 			row = self.cur.fetchone()
 			if row:
-				print('tf '+word+' dans '+title_book+': '+str(row[0]))
+				# print('tf '+word+' dans '+title_book+': '+str(row[0]))
 				return row[0]
 
 
@@ -160,10 +163,11 @@ class Database():
 		except:
 			print("*** Requete SQL incorrecte execute_sql() ***")
 		else:
-			print(req)
-			for r in self.cur:
-				print (r)
-			print
+			# print(req)
+			# for r in self.cur:
+			# 	print (r)
+			# print
+			()
 
 	# Sauvegarde de l'état actuel de la base de données
 	def save_database(self):

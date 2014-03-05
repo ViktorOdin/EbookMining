@@ -1,48 +1,52 @@
 # -*- coding: utf8 -*-
+
 #!/usr/bin/env python2.7
 
+# Utilisation des modules du projet
 import sys
-sys.path.append("./Stat")
-import Stat as st
-sys.path.append("./Parser")
-import Parser as parser
 sys.path.append("./Database")
 import Database as db
+sys.path.append("./Parser")
+import Parser as parser
+sys.path.append("./Stat")
+import Stat as st
+
+# Lecture des fichiers d'un répertoire
+import os
 
 if __name__ == '__main__':
 	"Méthode main"
 	if len(sys.argv) < 2:
-		print("Usage: python main.py filepath\n"
-			+ "\toù filepath est le chemin du fichier PDF à lire")
+		print("Usage: python main.py directory\n"
+			+ "\toù directory est le chemin répertoire contenant"
+			+ "les livres à ajouter à la base")
 	else:
-		filepath = sys.argv[1]
-		pdf = parser.PdfReader(filepath)
+		# Connexion à la base de données
+		db = db.Database("db.sq3")
 
-		# Récupération des métadonnées du document
-		author = pdf.getAuthor()
-		title = pdf.getTitle()
+		# Vérification de l'existence des tables
+		# TODO
+		# db.creat_tables()
 
-		# Affichage des métadonnées du document
-		if author is not None:
-			print("Auteur du document: " + pdf.getAuthor())
-		else:
-			print("L'auteur du document n'est pas indiqué")
-		if title is not None:
-			print("Titre du document: " + pdf.getTitle())
-		else:
-			print("Le titre du document n'est pas indiqué")
+		# Récupération de la liste des fichiers à parser
+		directory = sys.argv[1]
+		for root, dirs, files in os.walk(directory):
+			for file in files:
+				filepath = os.path.abspath(os.path.join(root, file))
 
-		# Affichage du nombre de mots du document
-		print(pdf.text.getNumberOfWords())
+				# Lecture du fichier PDF
+				pdf = parser.PdfReader(filepath)
 
-		# Ecriture des occurences de chaque mot du document dans foo.txt
-		foo = open('foo.txt', 'w')
-		occurences = pdf.text.countOccurences()
-		for word in occurences:
-			foo.write(word.encode('utf8', 'ignore') + ": " 
-				+ str(occurences[word]) + "\n")
-		foo.close()
+				# Récupération des métadonnées du document
+				author = pdf.getAuthor()
+				title = pdf.getTitle()
 
-		# Essais de Victor sur les TF
-		tf = st.tf(pdf.text.getNumberOfWords(),occurences)
-		print(tf)
+				# Récupération des TF de chacun des mots
+				occurences = pdf.text.getOccurences()
+				tfs = st.tf(pdf.text.getNumberOfWords(), occurences)
+
+				# Ajout du livre à la base de données
+				db.add_book_to_database(title, author, tfs)
+
+		# Affichage de la liste des livres
+		db.show_books()
