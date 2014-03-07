@@ -87,6 +87,15 @@ class Database():
 			# print
 			()
 
+	# Vérification de l'existence du livre dans la base de donnees
+	def book_is_in_database(self, title_book, author_book):
+		# Recherche de l'id du livre
+		idb = self.id_book(title_book, author_book)
+		if idb == None:
+                        return False
+                else:
+                        return True
+                
 	# Ajout d'un livre dans la base de donnees
 	def add_book_to_database(self, title_book, author_book, tf_words):
 		# Recherche de l'id du livre
