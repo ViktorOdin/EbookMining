@@ -18,12 +18,11 @@ if __name__ == '__main__':
 
 	databasePath = "db.sq3"
 
-	# Vérification de l'existence des tables
-	# TODO
-	# db.creat_tables()
-
 	# Connexion à la base de données
 	db = db.Database(databasePath)
+
+	# Vérification de l'existence des tables
+	db.creat_tables()
 
 	if len(sys.argv) < 2:
 		print("Usage: python main.py directory\n"
@@ -67,6 +66,12 @@ if __name__ == '__main__':
 
 	# Affichage de la liste des livres
 	db.show_books()
+
+	# Affichage du nombre de mots
+	print("Nombre de mots dans la base: " + str(db.number_words()))
+
+	# Affichage du top 10 du bouquin "1"
+	db.top10_book()
 
 	# Fermeture de la connexion
 	db.close_connection()

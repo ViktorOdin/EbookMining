@@ -36,7 +36,7 @@ class Text():
 		"""Retourne la liste des mots nettoyés de leurs chiffres 
 		et de leur ponctuation."""
 		words = []
-		stemmer = FrenchStemmer()
+		# stemmer = FrenchStemmer()
 		# FIXME la liste des caractères n'est pas exhaustive
 		punctuation = unicode(string.punctuation + 
 			"+" + "%" + "°" +"«" + "»" + "<" + ">" +"#" + "˘" + "˜" + 
@@ -53,7 +53,7 @@ class Text():
 		for word in words_tmp:
 			if word[0] not in punctuation:
 				# Retirer le genre et le nombre du mot
-				word = stemmer.stem(word)
+				# word = stemmer.stem(word)
 				words.append(word)
 		return words
 
@@ -62,6 +62,7 @@ class Text():
 		dictionnaire dont les clés sont les mots et les valeurs	le nombre 
 		d'occurences."""
 		occ = {}
+		stemmer = FrenchStemmer()
 		# Découpage du texte en liste
 		words_tmp = self.words
 		# Suppression des mots les plus courants dans la langue française
@@ -69,6 +70,8 @@ class Text():
 		words = [w for w in words_tmp if w.encode('utf8') not in stop]
 		# Calcul des occurences
 		for word in words:
+			# Retirer le genre et le nombre du mot
+			word = stemmer.stem(word)
 			if word in occ:
 				occ[word] += 1
 			else:

@@ -34,7 +34,7 @@ class Database():
 	# Ajout d'un livre
 	def add_book(self, title_book, author_book):
 		try:
-			self.cur.execute("""INSERT INTO books(title, author) VALUES ('"""+title_book+"""', '"""+author_book+"""');""")
+			self.cur.execute('''INSERT INTO books(title, author) VALUES ("'''+title_book+'''", "'''+author_book+'''");''')
 		except:
 			print("*** Requete SQL incorrecte add_book("+title_book+") ***")
 		else:
@@ -56,7 +56,7 @@ class Database():
 	# Recherche id_book
 	def id_book(self, title_book, author_book):
 		try:
-			self.cur.execute("""SELECT id_book FROM books WHERE title='"""+title_book+"""' AND author='"""+author_book+"""'""")
+			self.cur.execute('''SELECT id_book FROM books WHERE title="'''+title_book+'''"" AND author="'''+author_book+'''"''')
 		except:
 			print("*** Requete SQL incorrecte id_book("+title_book+") ***")
 		else:
@@ -127,8 +127,36 @@ class Database():
 				# print('tf '+word+' dans '+title_book+': '+str(row[0]))
 				return row[0]
 
+	# Nombre de mots dans la base
+	def number_words(self):
+		try:
+			self.cur.execute('''SELECT count(*) FROM words''')
+		except:
+			print("*** Requete SQL incorrecte show_books() ***")
+		else:
+			row = self.cur.fetchone()
+			return row[0]
 
+	def get_word_by_id(self, id_word):
+		try:
+			self.cur.execute('''SELECT val FROM words WHERE id_word = ''' + id_word)
+		except:
+			print("*** Requete SQL incorrecte get_word_by_id() ***")
+		else:
+			row = self.cur.fetchone()
+			return row[0]
 
+	def top10_book(self):
+		cur = self.conn.cursor()
+		try:
+			cur.execute('''SELECT id_word, val FROM TF WHERE id_book = 3 ORDER BY val DESC LIMIT 50''')
+		except:
+			print("*** Requete SQL incorrecte top10_book() ***")
+		else:
+			for b in cur:
+				word = self.get_word_by_id(str(b[0]))
+				print(word + ": " + str(b[1]))
+			print
 
 	# Affichage des livres
 	def show_books(self):

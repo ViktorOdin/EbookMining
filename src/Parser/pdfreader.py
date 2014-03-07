@@ -15,27 +15,22 @@ class PdfReader():
 		[filepath] est le chemin vers le fichier PDF."""
 		self.filepath = filepath
 		self.pdf = pyPdf.PdfFileReader(open(filepath, "rb"))
-		self.metadata = self.extractMetadata()
+		self.author = self.pdf.getDocumentInfo().get('/Author')
+		self.title = self.pdf.getDocumentInfo().get('/Title')
 
 	### Accesseurs 
 		
 	def getAuthor(self):
 		"Retourne l'auteur du document, ou None s'il n'est pas défini."
-		return self.metadata.get('/Author')
+		# TODO 
+		return self.author
 
 	def getTitle(self):
 		"Retourne le titre du document, ou None s'il n'est pas défini."
-		return self.metadata.get('/Title')
-
-	def getText(self):
-		"Retourne le texte du document."
-		return self.text
+		# TODO nettoyer le titre
+		return self.title
 
 	### Méthodes internes
-
-	def extractMetadata(self):
-		"Extrait les métadonnées du document."
-		return self.pdf.getDocumentInfo()
 
 	def extractText(self):
 		"Extrait le texte du document."
