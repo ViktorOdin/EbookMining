@@ -45,19 +45,25 @@ if __name__ == '__main__':
 				author = pdf.getAuthor()
 				title = pdf.getTitle()
 
-				# TODO delete me
-				print("Livre en cours de traitement: " + title)
+				if not db.book_is_in_database(title, author):
+					# Extraction du texte
+					text = pdf.extractText()
 
-				# Récupération des TF de chacun des mots
-				occurences = pdf.text.getOccurences()
-				tfs = st.tf(pdf.text.getNumberOfWords(), occurences)
+					# TODO delete me
+					print("Livre en cours de traitement: " + title)
 
-				# Ajout du livre à la base de données
-				db.add_book_to_database(title, author, tfs)
+					# Récupération des TF de chacun des mots
+					occurences = text.getOccurences()
+					tfs = st.tf(text.getNumberOfWords(), occurences)
 
-				# Enregistrement des modifications
-				db.save_database()
+					# Ajout du livre à la base de données
+					db.add_book_to_database(title, author, tfs)
 
+					# Enregistrement des modifications
+					db.save_database()
+
+				else:
+					print("Livre deja dans la base: " + title)
 
 	# Affichage de la liste des livres
 	db.show_books()
