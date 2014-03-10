@@ -70,8 +70,10 @@ if __name__ == '__main__':
 	# Affichage du nombre de mots
 	print("Nombre de mots dans la base: " + str(db.number_words()))
 
-	# Affichage du top 10 du bouquin "1"
-	db.top10_book()
+	# Affichage du top 20 d'un livre
+	# for i in range (db.number_books()):
+	# 	print("Top 20 du " + str(i) + "è livre:")
+	# 	db.top20_book(i)
 
 	# Fermeture de la connexion
 	db.close_connection()

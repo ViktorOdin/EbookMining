@@ -6,7 +6,7 @@
 "Ce module enregistre le contenu et les métadonnées d'un fichier PDF."
 
 import pyPdf
-from text import Text
+from text import Text, clean
 
 class PdfReader():
 
@@ -22,13 +22,12 @@ class PdfReader():
 		
 	def getAuthor(self):
 		"Retourne l'auteur du document, ou None s'il n'est pas défini."
-		# TODO 
-		return self.author
+		return clean(self.author)
 
 	def getTitle(self):
 		"Retourne le titre du document, ou None s'il n'est pas défini."
 		# TODO nettoyer le titre
-		return self.title
+		return clean(self.title)
 
 	### Méthodes internes
 
