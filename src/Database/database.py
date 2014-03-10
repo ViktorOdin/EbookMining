@@ -56,7 +56,7 @@ class Database():
 	# Recherche id_book
 	def id_book(self, title_book, author_book):
 		try:
-			self.cur.execute('''SELECT id_book FROM books WHERE title="'''+title_book+'''"" AND author="'''+author_book+'''"''')
+			self.cur.execute('''SELECT id_book FROM books WHERE title="'''+title_book+'''" AND author="'''+author_book+'''"''')
 		except:
 			print("*** Requete SQL incorrecte id_book("+title_book+") ***")
 		else:
@@ -100,7 +100,7 @@ class Database():
 	def add_book_to_database(self, title_book, author_book, tf_words):
 		# Recherche de l'id du livre
 		idb = self.id_book(title_book, author_book)
-		if idb == None:
+		if idb == None	:
 			self.add_book(title_book, author_book)
 			idb = self.id_book(title_book, author_book)
 		for word in tf_words:
@@ -132,10 +132,20 @@ class Database():
 		try:
 			self.cur.execute('''SELECT count(*) FROM words''')
 		except:
-			print("*** Requete SQL incorrecte show_books() ***")
+			print("*** Requete SQL incorrecte number_words() ***")
 		else:
 			row = self.cur.fetchone()
 			return row[0]
+
+	# Nombre de mots dans la base
+	def number_books(self):
+		try:
+			self.cur.execute('''SELECT count(*) FROM books''')
+		except:
+			print("*** Requete SQL incorrecte number_books() ***")
+		else:
+			row = self.cur.fetchone()
+			return row[0]	
 
 	def get_word_by_id(self, id_word):
 		try:
@@ -146,10 +156,10 @@ class Database():
 			row = self.cur.fetchone()
 			return row[0]
 
-	def top10_book(self):
+	def top20_book(self, id_book):
 		cur = self.conn.cursor()
 		try:
-			cur.execute('''SELECT id_word, val FROM TF WHERE id_book = 3 ORDER BY val DESC LIMIT 50''')
+			cur.execute('''SELECT id_word, val FROM TF WHERE id_book = ''' + str(id_book) + ''' ORDER BY val DESC LIMIT 20''')
 		except:
 			print("*** Requete SQL incorrecte top10_book() ***")
 		else:
