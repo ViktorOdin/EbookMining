@@ -208,37 +208,31 @@ class Database():
 			print
 
 	# IDF
-	def dic_word_idword(self):
+	def dic_word_nbbooks(self):
 		try:
-			self.cur.execute("""SELECT id_word, val FROM words""")
+			self.cur.execute("""SELECT val, nb_books FROM words""")
 		except:
 			print("*** Requete SQL incorrecte idf() ***")
 		else:
-			dic_preidf = {}
+			dic_nbbooks = {}
 			for a in self.cur:
-				#print(a)
-				word = (a[1])
-				preidf = str(a[0])
-				dic_preidf[word] = preidf
-			return dic_preidf
+				word = (a[0])
+				nbbooks = str(a[1])
+				dic_nbbooks[word] = nbbooks
+			return dic_nbbooks
 
-	def dic_word_nbbook(self):
-		dic_word_idword = self.dic_word_idword()
-		dic_word_nbbook = {}
-		for word in dic_word_idword.keys():
-			dic_word_nbbook[word] = self.nb_book_for_id_word(dic_word_idword[word])
-		return dic_word_nbbook
-	
-
-	# Nombre de livres dans la base	ayant le mot id_word		
-	def nb_book_for_id_word(self, id_word):
+	def dic_tf_book(self, id_book):
 		try:
-			self.cur.execute("""SELECT count(id_book) FROM TF WHERE id_word =""" + str(id_word))
+			self.cur.execute("""SELECT a.val, b.val FROM TF AS b JOIN words as a WHERE id_book ="""+ str(id_book))
 		except:
 			print("*** Requete SQL incorrecte idf() ***")
 		else:
-			row = self.cur.fetchone()
-			return row[0]
+			dic_tf = {}
+			for a in self.cur:
+				word = (a[0])
+				tf = str(a[1])
+				dic_tf[word] = tf
+			return dic_tf
 
 	# Exécution d'une requête SQL
 	def execute_sql(self, req):

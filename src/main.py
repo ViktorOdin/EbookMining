@@ -78,8 +78,17 @@ if __name__ == '__main__':
 	#calcul IDF
 	nb_books = db.number_books()
 	print(nb_books)
-	dic = db.dic_word_nbbook()
-	print(dic)
+	dic = db.dic_word_nbbooks()
+	print(1)
+	dic_idf = st.dic_idf(nb_books, dic)
+	print(2)
+	dic_tf = db.dic_tf_book(1)
+	print(3)
+	print(dic_tf["dqsdqs"])
+	dic_tfidf = {}
+	for word in dic_idf:
+		dic_tfidf[word] = (dic_tf[word]*dic_idf[word])
+	print(dic_idf)
 
 
 	# Fermeture de la connexion
