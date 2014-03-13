@@ -75,5 +75,12 @@ if __name__ == '__main__':
 	# 	print("Top 20 du " + str(i) + "è livre:")
 	# 	db.top20_book(i)
 
+	#calcul IDF
+	nb_books = db.number_books()
+	print(nb_books)
+	dic = db.dic_word_nbbook()
+	print(dic)
+
+
 	# Fermeture de la connexion
 	db.close_connection()

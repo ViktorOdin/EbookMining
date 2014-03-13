@@ -149,7 +149,7 @@ class Database():
 
 	def get_word_by_id(self, id_word):
 		try:
-			self.cur.execute('''SELECT val FROM words WHERE id_word = ''' + id_word)
+			self.cur.execute('''SELECT val FROM words WHERE id_word = ''' + str(id_word))
 		except:
 			print("*** Requete SQL incorrecte get_word_by_id() ***")
 		else:
@@ -203,6 +203,39 @@ class Database():
 			for a in self.cur:
 				print(a)
 			print
+
+	# IDF
+	def dic_word_idword(self):
+		try:
+			self.cur.execute("""SELECT id_word, val FROM words""")
+		except:
+			print("*** Requete SQL incorrecte idf() ***")
+		else:
+			dic_preidf = {}
+			for a in self.cur:
+				#print(a)
+				word = (a[1])
+				preidf = str(a[0])
+				dic_preidf[word] = preidf
+			return dic_preidf
+
+	def dic_word_nbbook(self):
+		dic_word_idword = self.dic_word_idword()
+		dic_word_nbbook = {}
+		for word in dic_word_idword.keys():
+			dic_word_nbbook[word] = self.nb_book_for_id_word(dic_word_idword[word])
+		return dic_word_nbbook
+	
+
+	# Nombre de livres dans la base	ayant le mot id_word		
+	def nb_book_for_id_word(self, id_word):
+		try:
+			self.cur.execute("""SELECT count(id_book) FROM TF WHERE id_word =""" + str(id_word))
+		except:
+			print("*** Requete SQL incorrecte idf() ***")
+		else:
+			row = self.cur.fetchone()
+			return row[0]
 
 	# Exécution d'une requête SQL
 	def execute_sql(self, req):
