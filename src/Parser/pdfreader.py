@@ -26,7 +26,6 @@ class PdfReader():
 
 	def getTitle(self):
 		"Retourne le titre du document, ou None s'il n'est pas défini."
-		# TODO nettoyer le titre
 		return clean(self.title)
 
 	### Méthodes internes

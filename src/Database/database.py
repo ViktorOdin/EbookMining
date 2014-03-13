@@ -25,7 +25,7 @@ class Database():
 			# Table des livres
 			self.cur.execute("""CREATE TABLE books(id_book INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(45), author VARCHAR(45))""")
 			# Table des mots
-			self.cur.execute("""CREATE TABLE words(id_word INTEGER PRIMARY KEY AUTOINCREMENT, val VARCHAR(45))""")
+			self.cur.execute("""CREATE TABLE words(id_word INTEGER PRIMARY KEY AUTOINCREMENT, val VARCHAR(45), nb_books INTEGER)""")
 			# Table des TFs
 			self.cur.execute("""CREATE TABLE TF(id_book INTEGER NOT NULL, id_word INTEGER NOT NULL, val FLOAT, FOREIGN KEY (id_book) REFERENCES books(id_book), FOREIGN KEY (id_word) REFERENCES words(id_word), PRIMARY KEY (id_book, id_word))""")
 		except:
@@ -45,7 +45,7 @@ class Database():
 	# Ajout d'un mot
 	def add_word(self, val_word):
 		try:
-			self.cur.execute("""INSERT INTO words(val) VALUES ('"""+val_word+"""')""")
+			self.cur.execute("""INSERT INTO words(val, nb_books) VALUES ('"""+val_word+"""', 1)""")
 		except:
 			print("*** Requete SQL incorrecte add_word("+val_word+") ***")
 		else:
@@ -110,6 +110,9 @@ class Database():
 				# Ajout du mot s'il n'y est pas encore
 				self.add_word(word)
 				idw = self.id_word(word)
+			else:
+				# Incrémentation du nombre de livres où le mot apparaît
+				self.cur.execute("""UPDATE words SET nb_books = nb_books + 1 WHERE id_word = """ + str(idw))
 			self.add_tf(str(idb), str(idw), tf_words[word])
 
 	# Recherche du TF d'un mot dans un livre
