@@ -208,30 +208,30 @@ class Database():
 			print
 
 	# IDF
-	def dic_word_nbbooks(self):
+	def dic_idword_nbbooks(self):
 		try:
-			self.cur.execute("""SELECT val, nb_books FROM words""")
+			self.cur.execute("""SELECT id_word, nb_books FROM words""")
 		except:
 			print("*** Requete SQL incorrecte idf() ***")
 		else:
 			dic_nbbooks = {}
 			for a in self.cur:
-				word = (a[0])
+				id_word = str(a[0])
 				nbbooks = str(a[1])
-				dic_nbbooks[word] = nbbooks
+				dic_nbbooks[id_word] = nbbooks
 			return dic_nbbooks
 
 	def dic_tf_book(self, id_book):
 		try:
-			self.cur.execute("""SELECT a.val, b.val FROM TF AS b JOIN words as a WHERE id_book ="""+ str(id_book))
+			self.cur.execute("""SELECT id_word, val FROM TF WHERE id_book ="""+ str(id_book))
 		except:
 			print("*** Requete SQL incorrecte idf() ***")
 		else:
 			dic_tf = {}
 			for a in self.cur:
-				word = (a[0])
+				id_word = str(a[0])
 				tf = str(a[1])
-				dic_tf[word] = tf
+				dic_tf[id_word] = tf
 			return dic_tf
 
 	# Exécution d'une requête SQL

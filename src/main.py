@@ -10,6 +10,7 @@ sys.path.append("./Parser")
 import Parser as parser
 sys.path.append("./Stat")
 import Stat as st
+import numpy as np
 
 # Lecture des fichiers d'un répertoire
 import os
@@ -78,17 +79,19 @@ if __name__ == '__main__':
 	#calcul IDF
 	nb_books = db.number_books()
 	print(nb_books)
-	dic = db.dic_word_nbbooks()
-	print(1)
+	dic = db.dic_idword_nbbooks()
 	dic_idf = st.dic_idf(nb_books, dic)
-	print(2)
-	dic_tf = db.dic_tf_book(1)
-	print(3)
-	print(dic_tf["dqsdqs"])
-	dic_tfidf = {}
-	for word in dic_idf:
-		dic_tfidf[word] = (dic_tf[word]*dic_idf[word])
-	print(dic_idf)
+	dic_tf1 = db.dic_tf_book(1)
+	dic_tf2 = db.dic_tf_book(1)
+	
+	list_tfidf1 = []
+	list_tfidf2 = []
+	for idword in dic_idf:
+		list_tfidf1.append(float(dic_tf1.get(idword,0))*float(dic_idf[idword]))
+		list_tfidf2.append(float(dic_tf2.get(idword,0))*float(dic_idf[idword]))
+	
+	cos = st.similarity(np.array(list_tfidf1, dtype=np.float),np.array(list_tfidf2, dtype=np.float))
+	print(cos)
 
 
 	# Fermeture de la connexion
