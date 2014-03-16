@@ -45,7 +45,10 @@ if __name__ == '__main__':
 				author = pdf.getAuthor()
 				title = pdf.getTitle()
 
-				if not db.book_is_in_database(title, author):
+				if author is None or title is None:
+					print("Métadonnées invalides: " + filepath)
+
+				elif not db.book_is_in_database(title, author):
 					# Extraction du texte
 					text = pdf.extractText()
 

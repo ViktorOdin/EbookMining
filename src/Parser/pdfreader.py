@@ -1,4 +1,3 @@
-
 # -*- coding: utf8 -*-
 
 #!/usr/bin/env python2.7
@@ -22,11 +21,17 @@ class PdfReader():
 		
 	def getAuthor(self):
 		"Retourne l'auteur du document, ou None s'il n'est pas défini."
-		return clean(self.author)
+		if self.author is None:
+			return None
+		else:
+			return clean(self.author)
 
 	def getTitle(self):
 		"Retourne le titre du document, ou None s'il n'est pas défini."
-		return clean(self.title)
+		if self.title is None:
+			return None
+		else:
+			return clean(self.title)
 
 	### Méthodes internes
 
