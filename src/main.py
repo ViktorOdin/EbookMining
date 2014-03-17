@@ -81,8 +81,8 @@ if __name__ == '__main__':
 	print(nb_books)
 	dic = db.dic_idword_nbbooks()
 	dic_idf = st.dic_idf(nb_books, dic)
-	dic_tf1 = db.dic_tf_book(1)
-	dic_tf2 = db.dic_tf_book(1)
+	dic_tf1 = db.dic_tf_book(28)
+	dic_tf2 = db.dic_tf_book(33)
 	
 	list_tfidf1 = []
 	list_tfidf2 = []
@@ -90,8 +90,10 @@ if __name__ == '__main__':
 		list_tfidf1.append(float(dic_tf1.get(idword,0))*float(dic_idf[idword]))
 		list_tfidf2.append(float(dic_tf2.get(idword,0))*float(dic_idf[idword]))
 	
-	cos = st.similarity(np.array(list_tfidf1, dtype=np.float),np.array(list_tfidf2, dtype=np.float))
-	print(cos)
+	cos1 = st.similarity(np.array(list_tfidf1, dtype=np.float),np.array(list_tfidf2, dtype=np.float))
+	print(cos1)
+	cos1 = st.similarity(np.array(list_tfidf1, dtype=np.float),np.array(list_tfidf1, dtype=np.float))
+	print(cos1)
 
 
 	# Fermeture de la connexion
