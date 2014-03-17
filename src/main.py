@@ -37,33 +37,42 @@ if __name__ == '__main__':
 		for root, dirs, files in os.walk(directoryPath):
 			for file in files:
 				filepath = os.path.abspath(os.path.join(root, file))
+				print("Traitement du livre: " + filepath)
 
-				# Lecture du fichier PDF
-				pdf = parser.PdfReader(filepath)
-
-				# Récupération des métadonnées du document
-				author = pdf.getAuthor()
-				title = pdf.getTitle()
-
-				if not db.book_is_in_database(title, author):
-					# Extraction du texte
-					text = pdf.extractText()
-
-					# TODO delete me
-					print("Livre en cours de traitement: " + title)
-
-					# Récupération des TF de chacun des mots
-					occurences = text.getOccurences()
-					tfs = st.tf(text.getNumberOfWords(), occurences)
-
-					# Ajout du livre à la base de données
-					db.add_book_to_database(title, author, tfs)
-
-					# Enregistrement des modifications
-					db.save_database()
+				# Vérification de l'extension du fichier
+				if not filepath.endswith(".pdf"):
+					print("Format du fichier invalide")
 
 				else:
-					print("Livre deja dans la base: " + title)
+					# Lecture du fichier PDF
+					pdf = parser.PdfReader(filepath)
+
+					# Récupération des métadonnées du document
+					author = pdf.getAuthor()
+					title = pdf.getTitle()
+
+					if author is None or author == "" or title is None or title == "":
+						print("Métadonnées invalides: " + filepath)
+
+					elif not db.book_is_in_database(title, author):
+						# Extraction du texte
+						text = pdf.extractText()
+
+						# TODO delete me
+						print("Livre en cours de traitement: " + title)
+
+						# Récupération des TF de chacun des mots
+						occurences = text.getOccurences()
+						tfs = st.tf(text.getNumberOfWords(), occurences)
+
+						# Ajout du livre à la base de données
+						db.add_book_to_database(title, author, tfs)
+
+						# Enregistrement des modifications
+						db.save_database()
+
+					else:
+						print("Livre deja dans la base: " + title)
 
 	# Affichage de la liste des livres
 	db.show_books()
