@@ -21,11 +21,6 @@ punctuation = unicode(string.punctuation +
 def clean(text):
 	"""Retourne la liste des mots nettoyés de leurs chiffres 
 	et de leur ponctuation."""
-	# FIXME la liste des caractères n'est pas exhaustive
-	punctuation = unicode(string.punctuation + 
-		"+" + "%" + "°" +"«" + "»" + "<" + ">" +"#" + "˘" + "˜" + 
-		"˛" + "˝" + "™" + "–" + "Œ",
-		'utf8')
 	# Encodage de unicode vers utf8
 	tmp = text.encode('utf8')
 	tmp = tmp.translate(None, string.digits)
