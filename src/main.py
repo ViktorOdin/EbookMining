@@ -134,19 +134,21 @@ if __name__ == '__main__':
 	# # 	print("Top 20 du " + str(i) + "è livre:")
 	# # 	db.top20_book(i)
 
-	# Calcul des similarités avec le livre 1
-	id_book = 1
+	# Calcul des similarités avec un livre
 	tfidfs = tfidfs()
-	dic_sim = similarities(tfidfs, id_book)
-	# Tri des valeurs en fonction de la similarité
-	sorted_dic_sim =  sorted(dic_sim.items(), key=lambda x: x[1], reverse=True)
-	tmp = 0
-	for sim in sorted_dic_sim:
-		if tmp < 10:
-			print(sim)
-			tmp += 1
-		else:
-			break
+
+	while True:
+		id_book = input("Entrez l'identifiant du livre (entier): ")
+		dic_sim = similarities(tfidfs, id_book)
+		# Tri des valeurs en fonction de la similarité
+		sorted_dic_sim =  sorted(dic_sim.items(), key=lambda x: x[1], reverse=True)
+		tmp = 0
+		for sim in sorted_dic_sim:
+			if tmp < 20:
+				print(sim)
+				tmp += 1
+			else:
+				break
 
 	# Fermeture de la connexion
 	db.close_connection()
