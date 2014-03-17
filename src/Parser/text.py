@@ -15,7 +15,7 @@ from nltk.corpus import stopwords
 # FIXME la liste des caractères n'est pas exhaustive
 punctuation = unicode(string.punctuation + 
 	"+" + "%" + "°" +"«" + "»" + "<" + ">" +"#" + "˘" + "˜" + 
-	"˛" + "˝" + "™" + "–" + "Œ" + "œ" + "^",
+	"˛" + "˝" + "™" + "–" + "Œ" + "œ" + "^" + "˙",
 	'utf8')
 
 def clean(text):
