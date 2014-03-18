@@ -1,13 +1,16 @@
 #-*- coding: utf8 -*-
 import sqlite3
 
+# Temps d'attente de la libération du verrou, en secondes
+TIME = 120 
+
 class Database():
 	
 	def __init__(self, dataFile):
 		# Chemin du fichier de la base de donnees
 		self.dataFile = dataFile
 		# Creation de la connexion et du curseur
-		self.conn = sqlite3.connect(self.dataFile)
+		self.conn = sqlite3.connect(self.dataFile, TIME)
 		self.cur = self.conn.cursor()
 
 	# Suppression des tables
@@ -52,6 +55,18 @@ class Database():
 			# print("add_word: "+val_word)
 			# print
 			()
+
+	# Récupération de la liste des id_book
+	def get_id_books(self):
+		try:
+			self.cur.execute("""SELECT id_book FROM books""")
+		except:
+			print("*** Requete SQL incorrecte get_id_books() ***")
+		else:
+			id_books = []
+			for b in self.cur:
+				id_books.append(b[0])
+			return id_books
 
 	# Recherche id_book
 	def id_book(self, title_book, author_book):
@@ -209,6 +224,7 @@ class Database():
 
 	# IDF
 	def dic_idword_nbbooks(self):
+		"""Récupère, pour chaque mot, le nombre de livres où il apparaît."""
 		try:
 			self.cur.execute("""SELECT id_word, nb_books FROM words""")
 		except:

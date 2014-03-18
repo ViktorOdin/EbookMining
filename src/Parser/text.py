@@ -7,7 +7,7 @@ Ce module permet de travailler sur un texte : le nettoyer, calculer le
 nombre d'occurence de chacun de ses mots.
 """
 
-import string
+import re, string
 from nltk.tokenize import WordPunctTokenizer
 from nltk.stem.snowball import FrenchStemmer
 from nltk.corpus import stopwords
@@ -15,19 +15,41 @@ from nltk.corpus import stopwords
 # FIXME la liste des caractères n'est pas exhaustive
 punctuation = unicode(string.punctuation + 
 	"+" + "%" + "°" +"«" + "»" + "<" + ">" +"#" + "˘" + "˜" + 
-	"˛" + "˝" + "™" + "–" + "Œ" + "œ" + "^",
+	"˛" + "˝" + "™" + "–" + "Œ" + "œ" + "^" + "˙",
 	'utf8')
 
 def clean(text):
 	"""Retourne la liste des mots nettoyés de leurs chiffres 
-	et de leur ponctuation."""
+	et de leurs accents, et passés en minuscules."""
 	# Encodage de unicode vers utf8
 	tmp = text.encode('utf8')
+	# Suppression des chiffres
 	tmp = tmp.translate(None, string.digits)
+	# Suppression des accents
+	tmp = remove_accents(tmp)
 	# Réencodage de utf8 vers unicode
 	text = unicode(tmp, 'utf8')
 	text = string.lower(text)
 	return text
+
+def remove_accents(ch, encod='utf-8'):
+    """Supprime les accents sans changer la casse (majuscules et minuscules)"""
+    conv = False
+    if not isinstance(ch, unicode):
+        ch = unicode(ch, encod, 'replace')
+        conv = True
+    alpha1 = u"àÀâÂäÄåÅçÇéÉèÈêÊëËîÎïÏôÔöÖùÙûÛüÜÿŸ"
+    alpha2 = u"aAaAaAaAcCeEeEeEeEiIiIoOoOuUuUuUyY"
+    x = ""
+    for c in ch:
+        k = alpha1.find(c)
+        if k >= 0:
+            x += alpha2[k]
+        else:
+            x += c
+    if conv:
+        x = x.encode(encod)
+    return x
 
 class Text():
 
@@ -51,14 +73,17 @@ class Text():
 
 	def split_words(self, text):
 		"""Retourne la liste des mots d'un texte."""
-		words = []
-		# Découpage en liste de mots
-		words_tmp = WordPunctTokenizer().tokenize(text)
-		# Ignorer la ponctuation
-		for word in words_tmp:
-			if word[0] not in punctuation:
-				words.append(word)
-		return words
+		# words = []
+		# # Découpage en liste de mots
+		# words_tmp = WordPunctTokenizer().tokenize(text)
+		# # Ignorer la ponctuation
+		# for word in words_tmp:
+		# 	if word[0] not in punctuation:
+		# 		words.append(word)
+		# return words
+		# Suppression de la ponctuation
+		text = re.sub("[\W]", " ", text, 0, 0)
+		return text.split()
 
 	def countOccurences(self):
 		"""Compte les occurences de chaque mot du texte	et retourne un 
