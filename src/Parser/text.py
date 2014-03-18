@@ -8,15 +8,8 @@ nombre d'occurence de chacun de ses mots.
 """
 
 import re, string
-from nltk.tokenize import WordPunctTokenizer
 from nltk.stem.snowball import FrenchStemmer
 from nltk.corpus import stopwords
-
-# FIXME la liste des caractères n'est pas exhaustive
-punctuation = unicode(string.punctuation + 
-	"+" + "%" + "°" +"«" + "»" + "<" + ">" +"#" + "˘" + "˜" + 
-	"˛" + "˝" + "™" + "–" + "Œ" + "œ" + "^" + "˙",
-	'utf8')
 
 def clean(text):
 	"""Retourne la liste des mots nettoyés de leurs chiffres 
@@ -73,14 +66,6 @@ class Text():
 
 	def split_words(self, text):
 		"""Retourne la liste des mots d'un texte."""
-		# words = []
-		# # Découpage en liste de mots
-		# words_tmp = WordPunctTokenizer().tokenize(text)
-		# # Ignorer la ponctuation
-		# for word in words_tmp:
-		# 	if word[0] not in punctuation:
-		# 		words.append(word)
-		# return words
 		# Suppression de la ponctuation
 		text = re.sub("[\W]", " ", text, 0, 0)
 		return text.split()
