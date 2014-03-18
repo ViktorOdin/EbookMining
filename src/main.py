@@ -52,7 +52,7 @@ def tfidfs():
 		for idword in dic_idf:
 			tfidf.append(float(dic_tf.get(idword,0)) * float(dic_idf[idword]))
 		tfidfs[id_book] = tfidf
-		print("TFIDF du livre " + str(id_book) + " calculé")
+		#print("TFIDF du livre " + str(id_book) + " calculé")
 	return tfidfs
 
 def similarities(tfidfs, id_book):
@@ -68,6 +68,23 @@ def similarities(tfidfs, id_book):
 			cos = st.similarity(tfidf_book, tfidf_tmp)
 			dic_sim[tfidf] = cos
 	return dic_sim
+
+def mat_similarities(tfidfs):
+	"""Fabrique la matrice de similarite"""
+	# Matrice de similarité
+	mat_sim = []
+	# Calcul des similarités-cosinus
+	for tfidf_i in tfidfs:
+		tmp_sim = []
+		# TFIDF du livre à comparer
+		tfidf_book_i = np.array(tfidfs[tfidf_i], dtype=np.float)
+		# Calcul des similarités-cosinus avec les autres livres
+		for tfidf_j in tfidfs:
+			tfidf_book_j = np.array(tfidfs[tfidf_j], dtype=np.float)
+			cos = st.similarity(tfidf_book_i, tfidf_book_j)
+			tmp_sim.append(cos)
+		mat_sim.append(tmp_sim)
+	return mat_sim
 
 if __name__ == '__main__':
 
@@ -124,10 +141,10 @@ if __name__ == '__main__':
 						db.save_database()
 
 					else:
-						print("Livre deja dans la base: " + title)é
+						print("Livre deja dans la base: " + title)
 
 	# # Affichage de la liste des livres
-	# db.show_books()
+	db.show_books()
 
 	# # Affichage du top 20 d'un livre
 	# # for i in range (db.number_books()):
@@ -136,6 +153,9 @@ if __name__ == '__main__':
 
 	# Calcul des similarités avec un livre
 	tfidfs = tfidfs()
+
+	# Calcul de la matrice de similarités
+	#mat_sim = mat_similarities(tfidfs)
 
 	while True:
 		id_book = input("Entrez l'identifiant du livre (entier): ")
