@@ -69,6 +69,13 @@ def similarities(tfidfs, id_book):
 			dic_sim[tfidf] = cos
 	return dic_sim
 
+def is_valid(author, title):
+	"""Vérifie si les métadonnées d'un PDF sont valides"""
+	author_valid = author is not None and author != ""
+	title_valid = title is not None and title != ""
+	return author_valid and title_valid
+
+
 if __name__ == '__main__':
 
 	databasePath = "db.sq3"
@@ -103,25 +110,29 @@ if __name__ == '__main__':
 					author = pdf.getAuthor()
 					title = pdf.getTitle()
 
-					if author is None or author == "" or title is None or title == "":
-						print("Métadonnées invalides: " + filepath)
+					if not is_valid(author, title):
+						print("Document invalide: " + filepath)
 
 					elif not db.book_is_in_database(title, author):
 						# Extraction du texte
-						text = pdf.extractText()
+						try:
+							text = pdf.extractText()
+						except:
+							print("Document invalide: " + filepath)
+							
+						else:
+							# TODO delete me
+							print("Livre en cours de traitement: " + title)
 
-						# TODO delete me
-						print("Livre en cours de traitement: " + title)
+							# Récupération des TF de chacun des mots
+							occurences = text.getOccurences()
+							tfs = st.tf(text.getNumberOfWords(), occurences)
 
-						# Récupération des TF de chacun des mots
-						occurences = text.getOccurences()
-						tfs = st.tf(text.getNumberOfWords(), occurences)
+							# Ajout du livre à la base de données
+							db.add_book_to_database(title, author, tfs)
 
-						# Ajout du livre à la base de données
-						db.add_book_to_database(title, author, tfs)
-
-						# Enregistrement des modifications
-						db.save_database()
+							# Enregistrement des modifications
+							db.save_database()
 
 					else:
 						print("Livre deja dans la base: " + title)
@@ -137,18 +148,24 @@ if __name__ == '__main__':
 	# Calcul des similarités avec un livre
 	tfidfs = tfidfs()
 
+	total_top = 20
 	while True:
 		id_book = input("Entrez l'identifiant du livre (entier): ")
 		dic_sim = similarities(tfidfs, id_book)
 		# Tri des valeurs en fonction de la similarité
 		sorted_dic_sim =  sorted(dic_sim.items(), key=lambda x: x[1], reverse=True)
-		tmp = 0
+		current_top = 1
+		# Affichage des meilleurs similarités
 		for sim in sorted_dic_sim:
-			if tmp < 20:
-				print(sim)
-				tmp += 1
+			if current_top <= total_top:
+				# Récupération du nom du livre
+				id_book = sim[0]
+				title, author = db.get_book_by_id(id_book)
+				print(str(current_top) + ") Titre: " + title + " | Auteur: " + author)
+				current_top += 1
 			else:
 				break
+			print
 
 	# Fermeture de la connexion
 	db.close_connection()
