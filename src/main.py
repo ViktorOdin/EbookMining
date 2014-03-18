@@ -69,14 +69,12 @@ def similarities(tfidfs, id_book):
 			dic_sim[tfidf] = cos
 	return dic_sim
 
-<<<<<<< HEAD
 def is_valid(author, title):
 	"""Vérifie si les métadonnées d'un PDF sont valides"""
 	author_valid = author is not None and author != ""
 	title_valid = title is not None and title != ""
 	return author_valid and title_valid
 
-=======
 def mat_similarities(tfidfs):
 	"""Fabrique la matrice de similarite"""
 	# Matrice de similarité
@@ -93,7 +91,6 @@ def mat_similarities(tfidfs):
 			tmp_sim.append(cos)
 		mat_sim.append(tmp_sim)
 	return mat_sim
->>>>>>> 9ac1acf1439f22466a45d6ce24ecec6046d3a8b7
 
 if __name__ == '__main__':
 
@@ -156,24 +153,17 @@ if __name__ == '__main__':
 					else:
 						print("Livre deja dans la base: " + title)
 
-	# # Affichage de la liste des livres
+	# Affichage de la liste des livres
 	db.show_books()
-
-	# # Affichage du top 20 d'un livre
-	# # for i in range (db.number_books()):
-	# # 	print("Top 20 du " + str(i) + "è livre:")
-	# # 	db.top20_book(i)
 
 	# Calcul des similarités avec un livre
 	tfidfs = tfidfs()
 
-<<<<<<< HEAD
 	total_top = 20
-=======
+
 	# Calcul de la matrice de similarités
 	#mat_sim = mat_similarities(tfidfs)
 
->>>>>>> 9ac1acf1439f22466a45d6ce24ecec6046d3a8b7
 	while True:
 		id_book = input("Entrez l'identifiant du livre (entier): ")
 		dic_sim = similarities(tfidfs, id_book)
