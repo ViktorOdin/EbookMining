@@ -124,40 +124,8 @@ if __name__ == '__main__':
 						db.save_database()
 
 					else:
-						print("Livre deja dans la base: " + title)
+						print("Livre deja dans la base: " + title)é
 
-<<<<<<< HEAD
-	# Affichage de la liste des livres
-	db.show_books()
-
-	# Affichage du nombre de mots
-	print("Nombre de mots dans la base: " + str(db.number_words()))
-
-	# Affichage du top 20 d'un livre
-	# for i in range (db.number_books()):
-	# 	print("Top 20 du " + str(i) + "è livre:")
-	# 	db.top20_book(i)
-
-	#calcul IDF
-	nb_books = db.number_books()
-	print(nb_books)
-	dic = db.dic_idword_nbbooks()
-	dic_idf = st.dic_idf(nb_books, dic)
-	dic_tf1 = db.dic_tf_book(28)
-	dic_tf2 = db.dic_tf_book(33)
-	
-	list_tfidf1 = []
-	list_tfidf2 = []
-	for idword in dic_idf:
-		list_tfidf1.append(float(dic_tf1.get(idword,0))*float(dic_idf[idword]))
-		list_tfidf2.append(float(dic_tf2.get(idword,0))*float(dic_idf[idword]))
-	
-	cos1 = st.similarity(np.array(list_tfidf1, dtype=np.float),np.array(list_tfidf2, dtype=np.float))
-	print(cos1)
-	cos1 = st.similarity(np.array(list_tfidf1, dtype=np.float),np.array(list_tfidf1, dtype=np.float))
-	print(cos1)
-
-=======
 	# # Affichage de la liste des livres
 	# db.show_books()
 
@@ -181,7 +149,6 @@ if __name__ == '__main__':
 				tmp += 1
 			else:
 				break
->>>>>>> 0492e039141805d2face40942dd03920483b20e8
 
 	# Fermeture de la connexion
 	db.close_connection()
