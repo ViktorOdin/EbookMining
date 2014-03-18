@@ -166,6 +166,7 @@ class Database():
 			return row[0]	
 
 	def get_word_by_id(self, id_word):
+		"""Renvoie la valeur d'un mot en fonction de son id"""
 		try:
 			self.cur.execute('''SELECT val FROM words WHERE id_word = ''' + str(id_word))
 		except:
@@ -173,6 +174,18 @@ class Database():
 		else:
 			row = self.cur.fetchone()
 			return row[0]
+
+			self.cur.execute("""CREATE TABLE books(id_book INTEGER PRIMARY KEY AUTOINCREMENT, title VARCHAR(45), author VARCHAR(45))""")
+
+	def get_book_by_id(self, id_book):
+		"""Renvoie le couple (titre, auteur) d'un livre en fonction de son id"""
+		try:
+			self.cur.execute("""SELECT title, author FROM books WHERE id_book =""" + str(id_book))
+		except:
+			print("*** Requete SQL incorrecte get_book_by_id() ***")
+		else:
+			row = self.cur.fetchone()
+			return row[0], row[1]
 
 	def top20_book(self, id_book):
 		cur = self.conn.cursor()
