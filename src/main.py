@@ -14,7 +14,7 @@ import Parser as parser
 sys.path.append("./Stat")
 import Stat as st
 
-# Lecture des fichiers d'un répertoire
+# Traitements sur le système
 import os
 
 # Calcul de la similarité-cosinus
@@ -72,18 +72,20 @@ def similarities(tfidfs, id_book):
 def mat_similarities(tfidfs):
 	"""Fabrique la matrice de similarite"""
 	# Matrice de similarité
-	mat_sim = []
+	mat_sim = {}
+	# Récupération de la liste des identifiants des livres
+	id_books = tfidfs.keys()
+	# Création des dictionnaires de chaque livre
+	for id_book in id_books:
+		mat_sim[id_book] = {}
 	# Calcul des similarités-cosinus
-	for tfidf_i in tfidfs:
-		tmp_sim = []
-		# TFIDF du livre à comparer
-		tfidf_book_i = np.array(tfidfs[tfidf_i], dtype=np.float)
-		# Calcul des similarités-cosinus avec les autres livres
-		for tfidf_j in tfidfs:
-			tfidf_book_j = np.array(tfidfs[tfidf_j], dtype=np.float)
+	for id_book_i in id_books:
+		tfidf_book_i = np.array(tfidfs[id_book_i], dtype=np.float)
+		for id_book_j in id_books[id_books.index(id_book_i)+1:]:
+			tfidf_book_j = np.array(tfidfs[id_book_j], dtype=np.float)
 			cos = st.similarity(tfidf_book_i, tfidf_book_j)
-			tmp_sim.append(cos)
-		mat_sim.append(tmp_sim)
+			mat_sim[id_book_i][id_book_j] = cos
+			mat_sim[id_book_j][id_book_i] = cos
 	return mat_sim
 
 def is_valid(author, title):
@@ -142,36 +144,40 @@ if __name__ == '__main__':
 			for path in files:
 				add_book_to_database(path)
 
-	# Affichage de la liste des livres
-	db.show_books()
-
 	# Calcul des similarités avec un livre
 	tfidfs = tfidfs()
 
 	# Calcul de la matrice de similarités
-	# print("Calcul de la matrice de similarités")
-	# mat_sim = mat_similarities(tfidfs)
+	mat_sim = mat_similarities(tfidfs)
 
 	# Boucle interactive : Renvoie la liste des livres les plus proches pour un identifiant donné
 	total_top = 20
-	while True:
+	quit = False
+	while not quit:
+		# Nettoyage de l'écran
+		os.system('clear')
+		# Affichage de la liste des livres
+		db.show_books()
 		id_book = input("Entrez l'identifiant du livre (entier): ")
-		dic_sim = similarities(tfidfs, id_book)
 		# Tri des valeurs en fonction de la similarité
+		dic_sim = mat_sim[id_book]
 		sorted_dic_sim =  sorted(dic_sim.items(), key=lambda x: x[1], reverse=True)
 		current_top = 1
+
 		# Affichage des meilleurs similarités
+		title, author = db.get_book_by_id(id_book)
+		print(u"Résultat pour " + title + u", de " + author)
 		for sim in sorted_dic_sim:
 			if current_top <= total_top:
 				cur_id_book = sim[0]
 				title, author = db.get_book_by_id(cur_id_book)
-				if cur_id_book == id_book:
-					print(u"Résultat des recherches pour le livre : Titre: " + title + u" | Auteur: " + author)
-				else:
-					print(str(current_top) + ") Titre: " + title + " | Auteur: " + author)
-					current_top += 1
+				print(str(current_top) + ") Titre: " + title + " | Auteur: " + author)
+				current_top += 1
 			else:
 				break
-
+		x = input("\nVoulez-vous vous faire recommander d'autres livres ('o'/'n') ? ")
+		if x == 'n':
+			quit = True
+					
 	# Fermeture de la connexion
 	db.close_connection()
