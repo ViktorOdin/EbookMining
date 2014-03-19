@@ -69,12 +69,6 @@ def similarities(tfidfs, id_book):
 			dic_sim[tfidf] = cos
 	return dic_sim
 
-def is_valid(author, title):
-	"""Vérifie si les métadonnées d'un PDF sont valides"""
-	author_valid = author is not None and author != ""
-	title_valid = title is not None and title != ""
-	return author_valid and title_valid
-
 def mat_similarities(tfidfs):
 	"""Fabrique la matrice de similarite"""
 	# Matrice de similarité
@@ -92,14 +86,50 @@ def mat_similarities(tfidfs):
 		mat_sim.append(tmp_sim)
 	return mat_sim
 
+def is_valid(author, title):
+	"""Vérifie si les métadonnées d'un PDF sont valides"""
+	author_valid = author is not None and author != ""
+	title_valid = title is not None and title != ""
+	return author_valid and title_valid
+
+def add_book_to_database(path):
+	filepath = os.path.abspath(os.path.join(root, path))
+	print("Ajout du fichier " + path)
+	# Vérification de l'extension du fichier
+	if filepath.endswith(".pdf"):
+		# Lecture du fichier PDF
+		pdf = parser.PdfReader(filepath)
+		# Récupération des métadonnées du document
+		author = pdf.getAuthor()
+		title = pdf.getTitle()
+		if is_valid(author, title) and not db.book_is_in_database(title, author):
+			# Extraction du texte
+			try:
+				text = pdf.extractText()
+			except:
+				()
+			else:
+				# Récupération des TF de chacun des mots
+				occurences = text.getOccurences()
+				tfs = st.tf(text.getNumberOfWords(), occurences)
+				# Ajout du livre à la base de données
+				db.add_book_to_database(title, author, tfs)
+
+				# Enregistrement des modifications
+				db.save_database()
+
+				# Affichage du nombre actuel de livres dans la base
+				print("Nombre de livres dans la base de données: " + str(db.number_books()))
+
+
+
 if __name__ == '__main__':
 
+	# Connexion à la base de donnée
 	databasePath = "db.sq3"
-
-	# Connexion à la base de donnéedatabase = "db.sq3"
 	db = db.Database(databasePath)
 
-	# Vérification de l'existence des tables	
+	# Vérification de l'existence des tables
 	db.creat_tables()
 
 	if len(sys.argv) < 2:
@@ -107,51 +137,10 @@ if __name__ == '__main__':
 
 	else:
 		directoryPath = sys.argv[1]
-
 		# Récupération de la liste des fichiers à parser
 		for root, dirs, files in os.walk(directoryPath):
-			for file in files:
-				filepath = os.path.abspath(os.path.join(root, file))
-				print("Traitement du livre: " + filepath)
-
-				# Vérification de l'extension du fichier
-				if not filepath.endswith(".pdf"):
-					print("Format du fichier invalide")
-
-				else:
-					# Lecture du fichier PDF
-					pdf = parser.PdfReader(filepath)
-
-					# Récupération des métadonnées du document
-					author = pdf.getAuthor()
-					title = pdf.getTitle()
-
-					if not is_valid(author, title):
-						print("Document invalide: " + filepath)
-
-					elif not db.book_is_in_database(title, author):
-						# Extraction du texte
-						try:
-							text = pdf.extractText()
-						except:
-							print("Document invalide: " + filepath)
-							
-						else:
-							# TODO delete me
-							print("Livre en cours de traitement: " + title)
-
-							# Récupération des TF de chacun des mots
-							occurences = text.getOccurences()
-							tfs = st.tf(text.getNumberOfWords(), occurences)
-
-							# Ajout du livre à la base de données
-							db.add_book_to_database(title, author, tfs)
-
-							# Enregistrement des modifications
-							db.save_database()
-
-					else:
-						print("Livre deja dans la base: " + title)
+			for path in files:
+				add_book_to_database(path)
 
 	# Affichage de la liste des livres
 	db.show_books()
@@ -159,11 +148,12 @@ if __name__ == '__main__':
 	# Calcul des similarités avec un livre
 	tfidfs = tfidfs()
 
-	total_top = 20
-
 	# Calcul de la matrice de similarités
-	#mat_sim = mat_similarities(tfidfs)
+	# print("Calcul de la matrice de similarités")
+	# mat_sim = mat_similarities(tfidfs)
 
+	# Boucle interactive : Renvoie la liste des livres les plus proches pour un identifiant donné
+	total_top = 20
 	while True:
 		id_book = input("Entrez l'identifiant du livre (entier): ")
 		dic_sim = similarities(tfidfs, id_book)
@@ -173,14 +163,15 @@ if __name__ == '__main__':
 		# Affichage des meilleurs similarités
 		for sim in sorted_dic_sim:
 			if current_top <= total_top:
-				# Récupération du nom du livre
-				id_book = sim[0]
-				title, author = db.get_book_by_id(id_book)
-				print(str(current_top) + ") Titre: " + title + " | Auteur: " + author)
-				current_top += 1
+				cur_id_book = sim[0]
+				title, author = db.get_book_by_id(cur_id_book)
+				if cur_id_book == id_book:
+					print(u"Résultat des recherches pour le livre : Titre: " + title + u" | Auteur: " + author)
+				else:
+					print(str(current_top) + ") Titre: " + title + " | Auteur: " + author)
+					current_top += 1
 			else:
 				break
-			print
 
 	# Fermeture de la connexion
 	db.close_connection()
