@@ -14,7 +14,7 @@ import Parser as parser
 sys.path.append("./Stat")
 import Stat as st
 
-# Lecture des fichiers d'un répertoire
+# Traitements sur le système
 import os
 
 # Calcul de la similarité-cosinus
@@ -72,28 +72,66 @@ def similarities(tfidfs, id_book):
 def mat_similarities(tfidfs):
 	"""Fabrique la matrice de similarite"""
 	# Matrice de similarité
-	mat_sim = []
+	mat_sim = {}
+	# Récupération de la liste des identifiants des livres
+	id_books = tfidfs.keys()
+	# Création des dictionnaires de chaque livre
+	for id_book in id_books:
+		mat_sim[id_book] = {}
 	# Calcul des similarités-cosinus
-	for tfidf_i in tfidfs:
-		tmp_sim = []
-		# TFIDF du livre à comparer
-		tfidf_book_i = np.array(tfidfs[tfidf_i], dtype=np.float)
-		# Calcul des similarités-cosinus avec les autres livres
-		for tfidf_j in tfidfs:
-			tfidf_book_j = np.array(tfidfs[tfidf_j], dtype=np.float)
+	for id_book_i in id_books:
+		tfidf_book_i = np.array(tfidfs[id_book_i], dtype=np.float)
+		for id_book_j in id_books[id_books.index(id_book_i)+1:]:
+			tfidf_book_j = np.array(tfidfs[id_book_j], dtype=np.float)
 			cos = st.similarity(tfidf_book_i, tfidf_book_j)
-			tmp_sim.append(cos)
-		mat_sim.append(tmp_sim)
+			mat_sim[id_book_i][id_book_j] = cos
+			mat_sim[id_book_j][id_book_i] = cos
 	return mat_sim
+
+def is_valid(author, title):
+	"""Vérifie si les métadonnées d'un PDF sont valides"""
+	author_valid = author is not None and author != ""
+	title_valid = title is not None and title != ""
+	return author_valid and title_valid
+
+def add_book_to_database(path):
+	filepath = os.path.abspath(os.path.join(root, path))
+	print("Ajout du fichier " + path)
+	# Vérification de l'extension du fichier
+	if filepath.endswith(".pdf"):
+		# Lecture du fichier PDF
+		pdf = parser.PdfReader(filepath)
+		# Récupération des métadonnées du document
+		author = pdf.getAuthor()
+		title = pdf.getTitle()
+		if is_valid(author, title) and not db.book_is_in_database(title, author):
+			# Extraction du texte
+			try:
+				text = pdf.extractText()
+			except:
+				()
+			else:
+				# Récupération des TF de chacun des mots
+				occurences = text.getOccurences()
+				tfs = st.tf(text.getNumberOfWords(), occurences)
+				# Ajout du livre à la base de données
+				db.add_book_to_database(title, author, tfs)
+
+				# Enregistrement des modifications
+				db.save_database()
+
+				# Affichage du nombre actuel de livres dans la base
+				print("Nombre de livres dans la base de données: " + str(db.number_books()))
+
+
 
 if __name__ == '__main__':
 
+	# Connexion à la base de donnée
 	databasePath = "db.sq3"
-
-	# Connexion à la base de donnéedatabase = "db.sq3"
 	db = db.Database(databasePath)
 
-	# Vérification de l'existence des tables	
+	# Vérification de l'existence des tables
 	db.creat_tables()
 
 	if len(sys.argv) < 2:
@@ -101,74 +139,45 @@ if __name__ == '__main__':
 
 	else:
 		directoryPath = sys.argv[1]
-
 		# Récupération de la liste des fichiers à parser
 		for root, dirs, files in os.walk(directoryPath):
-			for file in files:
-				filepath = os.path.abspath(os.path.join(root, file))
-				print("Traitement du livre: " + filepath)
-
-				# Vérification de l'extension du fichier
-				if not filepath.endswith(".pdf"):
-					print("Format du fichier invalide")
-
-				else:
-					# Lecture du fichier PDF
-					pdf = parser.PdfReader(filepath)
-
-					# Récupération des métadonnées du document
-					author = pdf.getAuthor()
-					title = pdf.getTitle()
-
-					if author is None or author == "" or title is None or title == "":
-						print("Métadonnées invalides: " + filepath)
-
-					elif not db.book_is_in_database(title, author):
-						# Extraction du texte
-						text = pdf.extractText()
-
-						# TODO delete me
-						print("Livre en cours de traitement: " + title)
-
-						# Récupération des TF de chacun des mots
-						occurences = text.getOccurences()
-						tfs = st.tf(text.getNumberOfWords(), occurences)
-
-						# Ajout du livre à la base de données
-						db.add_book_to_database(title, author, tfs)
-
-						# Enregistrement des modifications
-						db.save_database()
-
-					else:
-						print("Livre deja dans la base: " + title)
-
-	# # Affichage de la liste des livres
-	db.show_books()
-
-	# # Affichage du top 20 d'un livre
-	# # for i in range (db.number_books()):
-	# # 	print("Top 20 du " + str(i) + "è livre:")
-	# # 	db.top20_book(i)
+			for path in files:
+				add_book_to_database(path)
 
 	# Calcul des similarités avec un livre
 	tfidfs = tfidfs()
 
 	# Calcul de la matrice de similarités
-	#mat_sim = mat_similarities(tfidfs)
+	mat_sim = mat_similarities(tfidfs)
 
-	while True:
+	# Boucle interactive : Renvoie la liste des livres les plus proches pour un identifiant donné
+	total_top = 20
+	quit = False
+	while not quit:
+		# Nettoyage de l'écran
+		os.system('clear')
+		# Affichage de la liste des livres
+		db.show_books()
 		id_book = input("Entrez l'identifiant du livre (entier): ")
-		dic_sim = similarities(tfidfs, id_book)
 		# Tri des valeurs en fonction de la similarité
+		dic_sim = mat_sim[id_book]
 		sorted_dic_sim =  sorted(dic_sim.items(), key=lambda x: x[1], reverse=True)
-		tmp = 0
+		current_top = 1
+
+		# Affichage des meilleurs similarités
+		title, author = db.get_book_by_id(id_book)
+		print(u"Résultat pour " + title + u", de " + author)
 		for sim in sorted_dic_sim:
-			if tmp < 20:
-				print(sim)
-				tmp += 1
+			if current_top <= total_top:
+				cur_id_book = sim[0]
+				title, author = db.get_book_by_id(cur_id_book)
+				print(str(current_top) + ") Titre: " + title + " | Auteur: " + author)
+				current_top += 1
 			else:
 				break
-
+		x = input("\nVoulez-vous vous faire recommander d'autres livres ('o'/'n') ? ")
+		if x == 'n':
+			quit = True
+					
 	# Fermeture de la connexion
 	db.close_connection()

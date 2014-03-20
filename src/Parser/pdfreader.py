@@ -7,6 +7,9 @@
 import pyPdf
 from text import Text, clean
 
+global exception_no_space
+exception_no_space = "no_space_in_document"
+
 class PdfReader():
 
 	def __init__(self, filepath):
@@ -39,5 +42,8 @@ class PdfReader():
 		"Extrait le texte du document."
 		text = ""
 		for page in self.pdf.pages:
-			text += page.extractText()
+			tmp = page.extractText()
+			if tmp.count(' ') == 0:
+				raise Exception(exception_no_space)
+			text += tmp
 		return Text(text)
