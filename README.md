@@ -1,15 +1,18 @@
-EbookMining
-===========
+#EbookMining
 
-projet de datamining d'e-book
+Projet de recommandations de romans
 
-Environnement de développement
-==============================
+##Participants
+Isabelle Richard
+Victor Oudin
+Lala Tiana Randriamparany
 
-Langage utilisé : Python 2.7
-Encodage : utf8
+#Rapport
 
-Dépendances de modules : sqlite3, nltk, pypdf
+Le rapport ainsi que le plan de développement se trouvent dans le répertoire
+[Plan].
 
-Remarques
-=========
+#Code
+
+Le code source se trouve dans le répertoire [src].
+Une documentation se trouve dans le fichier [src/README.md].

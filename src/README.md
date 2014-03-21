@@ -1,7 +1,7 @@
 # Dépendances du projet
 
+apt-get install jython python2.7
 pip install sqlite3 nltk pypdf numpy
-apt-get install jython
 
 # Utilisation
 
