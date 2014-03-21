@@ -3,9 +3,9 @@
 Projet de recommandations de romans
 
 ##Participants
-Isabelle Richard
-Victor Oudin
-Lala Tiana Randriamparany
+	Isabelle Richard
+	Victor Oudin
+	Lala Tiana Randriamparany
 
 #Rapport
 
