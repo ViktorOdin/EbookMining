@@ -117,7 +117,7 @@ if __name__ == '__main__':
 	db = db.Database(databasePath)
 
 	# Création des tables
-	db.creat_tables()
+	# db.creat_tables()
 
 	if len(sys.argv) > 1:
 		path = sys.argv[1]
