@@ -34,6 +34,9 @@ nombre de mots pris en compte
 ## Database
 base de données supportés
 
+Augmentation de la vitesse d'accès à la base :
+Actuellement, les écritures dans la base sont séquentielles, ce qui ralentit l'ajout de livres à la base, l'ajout simultané de plusieurs livres n'étant pas possible. En rendant ces accès atomiques et asynchrones, en utilisant un SGBD (système de gestion de base de données), il serait alors possible de paralléliser les écritures et lectures, augmentant considérablement la vitesse d'ajout de livres à la base de données et le calcul des TF-IDF.
+
 ## Statistiques
 similarités supportés
 
@@ -42,8 +45,4 @@ similarités supportés
 
 ### Wiki
 
-
-
-Augmentation de la vitesse d'accès à la base :
-Actuellement, les écritures dans la base sont séquentielles, ce qui ralentit l'ajout de livres à la base, l'ajout simultané de plusieurs livres n'étant pas possible. En rendant ces accès atomiques et asynchrones, en utilisant un SGBD (système de gestion de base de données), il serait alors possible de paralléliser les écritures et lectures, augmentant considérablement la vitesse d'ajout de livres à la base de données et le calcul des TF-IDF.
 
