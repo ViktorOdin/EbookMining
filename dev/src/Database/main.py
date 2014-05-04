@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-#!/usr/bin/env python2.7
+# !/usr/bin/env python2.7
 #
 # EbookMining/dev/src/Database/__init__.py
 #
@@ -38,11 +38,11 @@ tf2w['mot2'] = 2.0
 # tf2w['mot20'] = 20.0
 # tf2w['mot21'] = 21.0
 print tf2w
-db.add_book_to_database('Book1','Auteur1',tf1w)
-db.add_book_to_database('Book2','Auteur2',tf2w)
+db.add_book_to_database('Book1', 'Auteur1', tf1w)
+db.add_book_to_database('Book2', 'Auteur2', tf2w)
 db.show_books()
 db.show_words()
 db.show_TFs()
 db.execute_sql("""SELECT * FROM TF, words WHERE TF.id_word = words.id_word""")
-db.tf_word('mot1', 'Book1','Auteur1')
-db.tf_word('mot1', 'Book2','Auteur2')
+db.tf_word('mot1', 'Book1', 'Auteur1')
+db.tf_word('mot1', 'Book2', 'Auteur2')

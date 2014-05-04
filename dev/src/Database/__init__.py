@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-#!/usr/bin/env python2.7
+# !/usr/bin/env python2.7
 #
 # EbookMining/dev/src/Database/__init__.py
 #
