@@ -2,3 +2,5 @@
 .pydevproject
 .settings
 *.class
+*.pyc
+db.sq3
