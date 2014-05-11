@@ -5,7 +5,7 @@ Documents de Spécifications pour échanger avec les différents contributeurs.
 
 ## Théories du Prétraitement.
 ### Etiquetage des mots.
-#### deux types de catégories:
+Deux types de catégories:
 - catégories “ouvertes”: classes qui ont un très grand nombre de membres, et aux quelles sont souvent ajoutés de nouveaux membres (noms, verbes, adjectifs, adverbes).
 - catégories “fermées” ou fonctionnelles: classes qui ont seulement quelques membres et une fonction grammaticale claire (déterminants, prépositions, pronoms, conjonctions de coordination et de subordination).
 
