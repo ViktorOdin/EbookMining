@@ -150,6 +150,7 @@ GitHub permet de maintenir un Wiki en rapport avec le projet. On l'utilisera com
 Copyright © 2014 Victor OUDIN <viktor.odex@gmail.com>  
 Copyright © 2014 Lala Tiana RANDRIAMPARANY <thinas4@gmail.com>  
 Copyright © 2014 Isabelle RICHARD <isabelle.richard89@gmail.com>  
+Copyright © 2014 Elias ABOU HAYDAR <abouhaydar.elias@gmail.com>  
 
 EbookMining is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
